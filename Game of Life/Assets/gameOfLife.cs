@@ -6,7 +6,7 @@ public class GameOfLife : ProcessingLite.GP21
 	float cellSize = 0.25f; //Size of our cells
 	int numberOfColums;
 	int numberOfRows;
-	int spawnChancePercentage = 10;
+	int spawnChancePercentage = 5;
 
 	void Start()
 	{
@@ -46,11 +46,16 @@ public class GameOfLife : ProcessingLite.GP21
 		//Clear screen
 		Background(0);
 
+
 		//TODO: Calculate next generation
-		/*
+		/* 
 		
 		Any live cell with fewer than two live neighbors dies as if caused by underpopulation.
 		
+		if (neighbours < 2 || neighbours > 3)
+		{
+			cells[x, y].alive = false;
+		}
 
 		Any live cell with two or three live neighbors lives on to the next generation.
 		
@@ -61,16 +66,77 @@ public class GameOfLife : ProcessingLite.GP21
 		//Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
 		*/
 
-			//TODO: update buffer
-			//
+		//TODO: update buffer
+		//
 
-			//Draw all cells.
-		for (int y = 0; y < numberOfRows; ++y)
+		//Draw all cells.
+		for (int y = 1; y < numberOfRows - 1; ++y)
 		{
-			for (int x = 0; x < numberOfColums; ++x)
+			for (int x = 1; x < numberOfColums - 1; ++x)
 			{
-				//Draw current cell
+				int neighbours = 0;
+
+				if (cells[x - 1, y].alive)
+				{
+					neighbours++;
+				}
+
+				if (cells[x, y - 1].alive)
+				{
+					neighbours++;
+				}
+
+				if (cells[x + 1, y].alive)
+				{
+					neighbours++;
+				}
+
+				if (cells[x, y + 1].alive)
+				{
+					neighbours++;
+				}
+
+				if (cells[x - 1, y - 1].alive)
+				{
+					neighbours++;
+				}
+
+				if (cells[x + 1, y + 1].alive)
+				{
+					neighbours++;
+				}
+
+				if (cells[x + 1, y - 1].alive)
+				{
+					neighbours++;
+				}
+
+				if (cells[x - 1, y + 1].alive)
+				{
+					neighbours++;
+				}
+
+				if (neighbours == 2 || neighbours == 3)
+                {
+					cells[x, y].alive = true;
+                }
+                else
+                {
+					cells[x, y].alive = false;
+				}
+
+				///////
+				if (neighbours < 2 || neighbours > 3)
+				{
+					cells[x, y].alive = false;
+				}
+                else
+                {
+					cells[x, y].alive = true;
+				}
 				cells[x, y].Draw();
+
+
 			}
 		}
 	}
@@ -105,5 +171,6 @@ public class GameCell : ProcessingLite.GP21
 			//draw our dots
 			Circle(x, y, size);
 		}
+
 	}
 }
