@@ -6,7 +6,7 @@ public class GameOfLife : ProcessingLite.GP21
 	float cellSize = 0.25f; //Size of our cells
 	int numberOfColums;
 	int numberOfRows;
-	int spawnChancePercentage = 5;
+	int spawnChancePercentage = 15;
 
 	void Start()
 	{
@@ -45,29 +45,6 @@ public class GameOfLife : ProcessingLite.GP21
 	{
 		//Clear screen
 		Background(0);
-
-
-		//TODO: Calculate next generation
-		/* 
-		
-		Any live cell with fewer than two live neighbors dies as if caused by underpopulation.
-		
-		if (neighbours < 2 || neighbours > 3)
-		{
-			cells[x, y].alive = false;
-		}
-
-		Any live cell with two or three live neighbors lives on to the next generation.
-		
-
-		Any live cell with more than three live neighbors dies, as if by overpopulation.
-		
-
-		//Any dead cell with exactly three live neighbors becomes a live cell, as if by reproduction.
-		*/
-
-		//TODO: update buffer
-		//
 
 		//Draw all cells.
 		for (int y = 1; y < numberOfRows - 1; ++y)
@@ -116,61 +93,65 @@ public class GameOfLife : ProcessingLite.GP21
 					neighbours++;
 				}
 
-				if (neighbours == 2 || neighbours == 3)
-                {
-					cells[x, y].alive = true;
-                }
-                else
-                {
-					cells[x, y].alive = false;
-				}
-
-				///////
-				if (neighbours < 2 || neighbours > 3)
+				if (neighbours == 2 && cells[x, y].alive)
 				{
-					cells[x, y].alive = false;
+					cells[x, y].nextGeneration = true;
 				}
-                else
-                {
-					cells[x, y].alive = true;
+				else if (neighbours == 3)
+				{
+					cells[x, y].nextGeneration = true;
 				}
+				else
+				{
+					cells[x, y].nextGeneration = false;
+				}
+
+			}
+		}
+
+		//Check next generation
+		for (int y = 1; y < numberOfRows - 1; ++y)
+		{
+			for (int x = 1; x < numberOfColums - 1; ++x)
+			{
+				cells[x, y].alive = cells[x, y].nextGeneration;
 				cells[x, y].Draw();
-
-
 			}
 		}
 	}
 }
 
-//You will probebly need to keep track of more things in this class
-public class GameCell : ProcessingLite.GP21
-{
-	float x, y; //Keep track of our position
-	float size; //our size
-
-	//Keep track if we are alive
-	public bool alive = false;
-
-	//Constructor
-	public GameCell(float x, float y, float size)
+	//You will probebly need to keep track of more things in this class
+	public class GameCell : ProcessingLite.GP21
 	{
-		//Our X is equal to incoming X, and so forth
-		//adjust our draw position so we are centered
-		this.x = x + size / 2;
-		this.y = y + size / 2;
+		float x, y; //Keep track of our position
+		float size; //our size
 
-		//diameter/radius draw size fix
-		this.size = size / 2;
-	}
+		//Keep track if we are alive
+		public bool alive = false;
+		public bool nextGeneration;
 
-	public void Draw()
-	{
-		//If we are alive, draw our dot.
-		if (alive)
+		//Constructor
+		public GameCell(float x, float y, float size)
 		{
-			//draw our dots
-			Circle(x, y, size);
+			//Our X is equal to incoming X, and so forth
+			//adjust our draw position so we are centered
+			this.x = x + size / 2;
+			this.y = y + size / 2;
+
+			//diameter/radius draw size fix
+			this.size = size / 2;
 		}
 
-	}
+		public void Draw()
+		{
+			//If we are alive, draw our dot.
+			if (alive)
+			{
+				//draw our dots
+				Circle(x, y, size);
+			}
+
+		}
+
 }
